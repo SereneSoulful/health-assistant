@@ -1,0 +1,45 @@
+#!/bin/sh
+# pre-commit：空白错误检查 + 大文件阻止 + 敏感信息扫描
+# 通过 git config core.hooksPath .githooks 启用
+
+FAILED=0
+
+echo "[pre-commit] 开始检查..."
+
+# 1. 空白错误（尾随空格、行尾缺失）
+if ! git diff --cached --check; then
+  echo "[pre-commit] ✗ 存在空白错误（尾随空格等），请修复后再提交。" >&2
+  FAILED=1
+fi
+
+# 2. 大文件阻止（GitHub 单文件上限 100MB，这里拦 50MB 留余量）
+LIMIT=$((50 * 1024 * 1024))
+git diff --cached --name-only | while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  size=$(wc -c < "$f" 2>/dev/null || echo 0)
+  if [ "$size" -gt "$LIMIT" ]; then
+    echo "[pre-commit] ✗ 文件过大（$(($size / 1024 / 1024))MB > 50MB）：$f" >&2
+    FAILED=1
+  fi
+done
+
+# 3. 敏感信息扫描（仅文本文件；二进制由 grep -I 自动跳过）
+PATTERN='ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{22,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|(password|passwd|secret|api[_-]?key|token)[[:space:]]*[=:][[:space:]]*[^[:space:]]+'
+git diff --cached --name-only | while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  if grep -Iq . "$f" 2>/dev/null; then
+    hit=$(grep -InE "$PATTERN" "$f" 2>/dev/null | head -3)
+    if [ -n "$hit" ]; then
+      echo "[pre-commit] ✗ 疑似敏感信息（请确认后改用 git commit --no-verify 强制跳过）：" >&2
+      echo "$hit" | sed 's/^/    /' >&2
+      FAILED=1
+    fi
+  fi
+done
+
+if [ "$FAILED" -ne 0 ]; then
+  echo "[pre-commit] ✗ 检查未通过，已阻止提交。" >&2
+  exit 1
+fi
+echo "[pre-commit] ✓ 检查通过。"
+exit 0
