@@ -1,0 +1,19 @@
+# 统一行尾：文本文件自动转换，脚本强制 LF
+* text=auto
+
+*.sh text eol=lf
+*.py text eol=lf
+*.cs text eol=lf
+*.xaml text eol=lf
+*.csproj text eol=lf
+*.slnx text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+
+# 二进制文件
+*.ttf binary
+*.ico binary
+*.exe binary
+*.png binary
+*.jpg binary

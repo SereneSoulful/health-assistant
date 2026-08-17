@@ -1,0 +1,32 @@
+#!/bin/sh
+# pre-push：扫描待推送提交中的敏感信息（防止历史遗留泄漏）
+# 首次推送（新仓库/新分支）时对全部提交做全量扫描
+
+PATTERN='ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{22,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+FAILED=0
+
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue  # 删除远程分支，跳过
+  fi
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    range="$local_sha"
+    echo "[pre-push] 首次推送，对全部提交做敏感信息扫描..."
+  else
+    range="${remote_sha}..${local_sha}"
+  fi
+
+  if git log --format='%H' "$range" 2>/dev/null | head -200 | while IFS= read -r c; do
+    git show "$c" --no-color 2>/dev/null
+  done | grep -qE "$PATTERN"; then
+    echo "[pre-push] ✗ 待推送提交中发现疑似敏感信息（GitHub Token / AWS Key / 私钥），已阻止推送。" >&2
+    echo "[pre-push]   请移除敏感内容并重写历史后再推送。" >&2
+    FAILED=1
+  fi
+done
+
+if [ "$FAILED" -ne 0 ]; then
+  exit 1
+fi
+echo "[pre-push] ✓ 敏感信息扫描通过。"
+exit 0

@@ -1,0 +1,22 @@
+# .NET 构建产物
+bin/
+obj/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# 发布产物（大体积 exe 不进仓库）
+发布/
+
+# 备份与临时文件
+*.bak
+*.bak-*
+*.tmp
+*~
+Thumbs.db
+Desktop.ini

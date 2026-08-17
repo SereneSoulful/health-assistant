@@ -1,0 +1,15 @@
+#!/bin/sh
+# commit-msg：提交信息基础校验（宽松）
+
+MSG=$(cat "$1" | grep -v '^#' | sed '/^$/d')
+if [ -z "$MSG" ]; then
+  echo "[commit-msg] ✗ 提交信息不能为空。" >&2
+  exit 1
+fi
+
+FIRST=$(echo "$MSG" | head -1)
+LEN=${#FIRST}
+if [ "$LEN" -gt 72 ]; then
+  echo "[commit-msg] ⚠ 建议：提交信息首行不超过 72 字符（当前 $LEN）。" >&2
+fi
+exit 0
