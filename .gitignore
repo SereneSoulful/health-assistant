@@ -20,3 +20,7 @@ artifacts/
 *~
 Thumbs.db
 Desktop.ini
+
+# 本地项目文档（不推送 GitHub）
+AGENTS.md
+MEMORY.md
