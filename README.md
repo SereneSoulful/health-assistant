@@ -1,6 +1,6 @@
 # 健康助手
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-orange.svg)
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4.svg)
 ![C# WPF](https://img.shields.io/badge/C%23-WPF-239120.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6.svg)
@@ -69,6 +69,6 @@ tools/              图标生成脚本（generate_icon.py）
 
 ## 资源与许可
 
-- 本项目采用 [MIT License](LICENSE)
+- 本项目**保留所有权利**（All Rights Reserved）：未经版权所有者书面许可，不得复制、分发、修改或用于商业用途，详见 [LICENSE](LICENSE)
 - 字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font)（SIL Open Font License 1.1），许可证见 `src/健康助手/Fonts/OFL.txt`
 - 像素风视觉规范来自 `wpf-pixel-ui` 设计技能

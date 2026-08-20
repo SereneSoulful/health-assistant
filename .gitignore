@@ -24,3 +24,6 @@ Desktop.ini
 # 本地项目文档（不推送 GitHub）
 AGENTS.md
 MEMORY.md
+
+# 本地工作日志与记忆
+.workbuddy/
