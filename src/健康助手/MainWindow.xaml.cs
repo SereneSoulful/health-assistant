@@ -85,6 +85,9 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Pomodoro_Click(object sender, RoutedEventArgs e)
+        => ((健康助手.App)System.Windows.Application.Current).ShowPomodoroWindow();
+
     private void CardButton_Click(object sender, RoutedEventArgs e)
     {
         if ((sender as FrameworkElement)?.Tag is not string tag) return;

@@ -65,6 +65,8 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,2,4,10">
                         <Button Content="＋ 添加提醒" Click="Add_Click" Style="{StaticResource PixelButtonStyle}"
                                 MinWidth="140" FontSize="15"/>
+                        <Button Content="番茄钟" Click="Pomodoro_Click" Style="{StaticResource PixelButtonStyle}"
+                                MinWidth="120" FontSize="15" Margin="10,0,0,0"/>
                     </StackPanel>
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,4">
                         <ItemsControl x:Name="ReminderList">
