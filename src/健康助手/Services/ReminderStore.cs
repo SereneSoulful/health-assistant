@@ -36,7 +36,8 @@ public sealed class ReminderStore
                 if (config != null)
                 {
                     config.Reminders ??= new List<Reminder>();
-                    if (config.Version < 2)
+                    config.Pomodoro ??= new PomodoroSettings();
+                    if (config.Version < 3)
                     {
                         Migrate(config);
                         Save(config);
@@ -65,7 +66,7 @@ public sealed class ReminderStore
 
     public static AppConfig CreateDefault()
     {
-        var config = new AppConfig { Version = 2, SoundEnabled = true };
+        var config = new AppConfig { Version = 3, SoundEnabled = true };
         config.Reminders.Add(new Reminder
         {
             Name = "远眺",
@@ -90,22 +91,31 @@ public sealed class ReminderStore
 
     private static void Migrate(AppConfig config)
     {
-        var hasWater = config.Reminders.Any(
-            r => r.Id == WaterSeedId || string.Equals(r.Name, "喝水", StringComparison.OrdinalIgnoreCase));
-        if (!hasWater)
+        if (config.Version < 2)
         {
-            config.Reminders.Add(new Reminder
+            var hasWater = config.Reminders.Any(
+                r => r.Id == WaterSeedId || string.Equals(r.Name, "喝水", StringComparison.OrdinalIgnoreCase));
+            if (!hasWater)
             {
-                Id = WaterSeedId,
-                Name = "喝水",
-                Message = "该喝水啦！起来接杯水，小口喝完再回来",
-                IntervalMinutes = 60,
-                ActionText = "我喝完了",
-                CountdownSeconds = 0,
-                IsEnabled = true
-            });
+                config.Reminders.Add(new Reminder
+                {
+                    Id = WaterSeedId,
+                    Name = "喝水",
+                    Message = "该喝水啦！起来接杯水，小口喝完再回来",
+                    IntervalMinutes = 60,
+                    ActionText = "我喝完了",
+                    CountdownSeconds = 0,
+                    IsEnabled = true
+                });
+            }
+            config.Version = 2;
         }
-        config.Version = 2;
+
+        if (config.Version < 3)
+        {
+            config.Pomodoro ??= new PomodoroSettings();
+            config.Version = 3;
+        }
     }
 
     private void BackupBrokenConfig(Exception ex)
